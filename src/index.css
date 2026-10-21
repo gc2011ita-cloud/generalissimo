@@ -1,0 +1,44 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-ox-950: #141c19;
+  --color-ox-900: #1e2a26;
+  --color-ox-800: #2a3a34;
+  --color-ox-700: #3a4d45;
+  --color-cream: #f2e6c9;
+  --color-paper: #f7f3ea;
+  --color-ochre: #e0a84a;
+  --color-ochre-700: #a8761f;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-paper text-ox-900 dark:bg-ox-950 dark:text-cream;
+    overscroll-behavior-y: none;
+  }
+  /* Almeno 16 px nei campi: sotto, Safari iOS fa lo zoom. */
+  input,
+  select,
+  textarea,
+  button {
+    font-size: max(16px, 1em);
+  }
+}
+
+@utility pt-safe {
+  padding-top: env(safe-area-inset-top);
+}
+@utility pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+@utility px-safe {
+  padding-left: max(1rem, env(safe-area-inset-left));
+  padding-right: max(1rem, env(safe-area-inset-right));
+}
