@@ -33,12 +33,12 @@ describe('finanze', () => {
       { key: 'c1', total: 300.1 },
       { key: 'c2', total: 200 },
     ])
-    const tagged = [tx('2026-01-01', 10, 'income', { tags: ['Ssm', 'Mmg'] }), tx('2026-01-02', 5, 'income', { tags: ['Ssm'] })]
+    const tagged = [tx('2026-01-01', 10, 'income', { tags: ['Fisso', 'Extra'] }), tx('2026-01-02', 5, 'income', { tags: ['Fisso'] })]
     expect(totalsBy(tagged, 'income', 'tag', '2026-01-01', '2026-01-31')).toEqual([
-      { key: 'Ssm', total: 15 },
-      { key: 'Mmg', total: 10 },
+      { key: 'Fisso', total: 15 },
+      { key: 'Extra', total: 10 },
     ])
-    expect(tagUsage(tagged)).toEqual(['Ssm', 'Mmg'])
+    expect(tagUsage(tagged)).toEqual(['Fisso', 'Extra'])
     expect(sumBetween(txs, 'expense', '2026-10-01', '2026-10-31')).toBe(200)
   })
 
@@ -49,6 +49,6 @@ describe('finanze', () => {
   })
 
   it('normalizza i tag', () => {
-    expect(normalizeTag('#Guardie  mediche ')).toBe('Guardie mediche')
+    expect(normalizeTag('#Lavoro  extra ')).toBe('Lavoro extra')
   })
 })

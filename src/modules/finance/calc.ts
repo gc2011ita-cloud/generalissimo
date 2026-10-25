@@ -100,7 +100,7 @@ export function categoriesByRecentUse<C extends { id: string; order: number }>(
   return [...categories].sort((a, b) => (uses.get(b.id) ?? 0) - (uses.get(a.id) ?? 0) || a.order - b.order)
 }
 
-/** '#Guardie mediche ' → 'Guardie mediche' */
+/** '#Lavoro  extra ' → 'Lavoro extra' */
 export function normalizeTag(tag: string) {
   return tag.replace(/^#+/, '').trim().replace(/\s+/g, ' ')
 }

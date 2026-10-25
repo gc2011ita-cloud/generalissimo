@@ -136,7 +136,7 @@ export interface Transaction extends BaseRecord {
   scope: Scope
   note: string
   recurringId: string | null
-  /** v2. Senza '#', es. 'Certificati sport' */
+  /** v2. Senza '#', es. 'Lavoro extra' */
   tags: string[]
 }
 
