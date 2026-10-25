@@ -136,6 +136,8 @@ export interface Transaction extends BaseRecord {
   scope: Scope
   note: string
   recurringId: string | null
+  /** v2. Senza '#', es. 'Certificati sport' */
+  tags: string[]
 }
 
 export interface Category extends BaseRecord {
@@ -144,6 +146,10 @@ export interface Category extends BaseRecord {
   icon: string
   /** Solo spese */
   monthlyBudget: number | null
+  /** v2. Ordine nell'inserimento rapido */
+  order: number
+  /** v2. Visibile nei grafici ma non proposta nell'inserimento (es. categorie storiche) */
+  hidden: boolean
 }
 
 export type AccountType = 'bank' | 'card' | 'cash'
@@ -226,6 +232,8 @@ export interface Workout extends BaseRecord {
   distance: number | null // km
   elevation: number | null // m
   note: string
+  /** v2. null = sessione di palestra in corso */
+  endedAt: ISODateTime | null
 }
 
 export interface WorkoutSet extends BaseRecord {
@@ -242,6 +250,8 @@ export interface WorkoutTemplateItem {
   exerciseId: string
   sets: number
   reps: number
+  /** v2. Recupero in secondi dopo ogni serie */
+  restSeconds: number
 }
 
 export interface WorkoutTemplate extends BaseRecord {
@@ -277,6 +287,21 @@ export interface Settings extends BaseRecord {
   lastBackupAt: ISODateTime | null
   lastPriceUpdateAt: ISODateTime | null
   snapshotMaxBytes: number
+  // v2
+  checkInQuestions: CheckInQuestion[]
+  lockEnabled: boolean
+  /** rawId della passkey in base64url */
+  lockCredentialId: string | null
+  /** Incremento suggerito quando completi tutte le ripetizioni previste */
+  progressionKg: number
+  defaultRestSeconds: number
+}
+
+/** Domanda sì/no del check-in. `auto`: risposta precompilata da un altro modulo. */
+export interface CheckInQuestion {
+  id: string
+  label: string
+  auto: 'workout' | 'study' | null
 }
 
 /** preRestore: copia dello stato attuale fatta prima di un ripristino */

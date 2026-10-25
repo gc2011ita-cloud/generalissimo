@@ -1,7 +1,9 @@
 // Lettura e ripristino dell'intero database (I/O su Dexie).
 
 import { DATA_TABLES, SCHEMA_VERSION, db } from '../../db/db'
+import { migrateRows } from '../../db/migrations'
 import { nowISO } from '../../db/repo'
+import { ensureSeedData } from '../../db/seed'
 import { SETTINGS_ID, withDefaults } from '../../db/settings'
 import type { Settings } from '../../db/schema'
 import { whenIdle } from '../../lib/idle'
@@ -42,8 +44,9 @@ export async function restoreBackup(backup: Backup): Promise<void> {
     for (const name of DATA_TABLES) {
       const table = db.table(name)
       await table.clear()
-      const rows = backup.tables[name]
-      if (rows?.length) await table.bulkPut(rows)
+      // Un backup di una versione precedente passa per le stesse migrazioni di Dexie.
+      const rows = migrateRows(name, backup.tables[name] ?? [], backup.schemaVersion, SCHEMA_VERSION)
+      if (rows.length) await table.bulkPut(rows)
     }
     // Le impostazioni del backup si completano con i default; la data dell'ultimo
     // backup resta la più recente tra quella del telefono e quella del file.
@@ -54,4 +57,6 @@ export async function restoreBackup(backup: Backup): Promise<void> {
       .at(-1) ?? null
     await db.settings.put({ ...restored, lastBackupAt })
   })
+  // Un backup senza esercizi o categorie (es. l'import dello storico) riceve quelli di base.
+  await ensureSeedData()
 }

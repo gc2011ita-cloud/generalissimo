@@ -2,8 +2,9 @@ import { EmptyState, Screen } from '../../components/ui'
 import { navigate } from '../../lib/router'
 
 export const MORE_SECTIONS = [
+  { path: '/finance', label: 'Finanze', empty: '' },
+  { path: '/diary', label: 'Diario', empty: '' },
   { path: '/study', label: 'Studio', empty: 'Studio a stati con ripasso: Fase 2.' },
-  { path: '/finance', label: 'Finanze', empty: 'Spese ed entrate: Fase 1. Investimenti: Fase 3.' },
   { path: '/stats', label: 'Statistiche', empty: 'Statistiche e revisioni: Fase 3.' },
   { path: '/settings', label: 'Impostazioni', empty: '' },
 ] as const

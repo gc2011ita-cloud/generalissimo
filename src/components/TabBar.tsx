@@ -8,10 +8,10 @@ const icon = (d: string) => (
 )
 
 const TABS: { path: string; label: string; icon: ReactNode; match: (p: string) => boolean }[] = [
-  { path: '/', label: 'Oggi', icon: icon('M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z'), match: (p) => p === '/' },
+  { path: '/', label: 'Oggi', icon: icon('M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z'), match: (p) => p === '/' || p.startsWith('/checkin') },
   { path: '/goals', label: 'Obiettivi', icon: icon('M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8z'), match: (p) => p.startsWith('/goals') },
   { path: '/gym', label: 'Palestra', icon: icon('M6 7v10M18 7v10M3 10v4M21 10v4M6 12h12'), match: (p) => p.startsWith('/gym') },
-  { path: '/more', label: 'Altro', icon: icon('M5 12h.01M12 12h.01M19 12h.01'), match: (p) => !['/', '/add'].includes(p) && !p.startsWith('/goals') && !p.startsWith('/gym') },
+  { path: '/more', label: 'Altro', icon: icon('M5 12h.01M12 12h.01M19 12h.01'), match: (p) => !['/', '/add'].includes(p) && !p.startsWith('/checkin') && !p.startsWith('/goals') && !p.startsWith('/gym') },
 ]
 
 export function TabBar({ onAdd }: { onAdd: () => void }) {

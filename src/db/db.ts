@@ -1,4 +1,5 @@
 import Dexie, { type EntityTable } from 'dexie'
+import { MIGRATIONS } from './migrations'
 import type {
   Account,
   BodyMetric,
@@ -57,7 +58,7 @@ export type GuidodelbueDB = Dexie & {
 
 // Versione 1. Ogni modifica allo schema = nuova db.version(n) con .upgrade(),
 // senza toccare le versioni precedenti. I booleani non sono indicizzabili in IndexedDB.
-const SCHEMA_V1 = {
+export const SCHEMA_V1 = {
   dayLogs: 'id, &date, updatedAt',
   goals: 'id, status, source, periodEnd, updatedAt',
   goalUpdates: 'id, goalId, date, [goalId+date], updatedAt',
@@ -85,10 +86,28 @@ const SCHEMA_V1 = {
   snapshotBlobs: 'id',
 } as const
 
-export const SCHEMA_VERSION = 1
+// Versione 2: tag sui movimenti, ordine/visibilità delle categorie, sessioni in corso.
+const SCHEMA_V2 = {
+  transactions: 'id, date, type, categoryId, accountId, recurringId, *tags, updatedAt',
+  workouts: 'id, date, templateId, type, endedAt, updatedAt',
+}
+
+export const SCHEMA_VERSION = 2
 
 export const db = new Dexie('guidodelbue') as GuidodelbueDB
 db.version(1).stores(SCHEMA_V1)
+db.version(2)
+  .stores(SCHEMA_V2)
+  .upgrade(async (tx) => {
+    for (const [table, migrate] of Object.entries(MIGRATIONS[2])) {
+      await tx
+        .table(table)
+        .toCollection()
+        .modify((row: Record<string, unknown>) => {
+          Object.assign(row, migrate(row))
+        })
+    }
+  })
 
 export type TableName = keyof typeof SCHEMA_V1
 

@@ -10,6 +10,8 @@ import type { ValidationResult } from '../backup/format'
 import { daysSinceBackup, formatBytes } from '../backup/reminder'
 import { totalSize } from '../backup/rotation'
 import { restoreSnapshot } from '../backup/snapshots'
+import { AccountsEditor, CategoriesEditor, CheckInQuestionsEditor, GymSettings } from './ConfigSections'
+import { LockSection } from './LockSection'
 
 const TABLE_LABELS: Record<string, string> = {
   dayLogs: 'giornate', goals: 'obiettivi', goalUpdates: 'aggiornamenti obiettivi', goalSteps: 'sotto-passi',
@@ -254,8 +256,23 @@ export function SettingsScreen() {
     <Screen title="Impostazioni" back={<BackLink />}>
       {settings && (
         <>
+          <Section title="Blocco con Face ID">
+            <LockSection enabled={settings.lockEnabled} credentialId={settings.lockCredentialId} />
+          </Section>
           <ThemeSection theme={settings.theme} />
           <BackupSection lastBackupAt={settings.lastBackupAt} />
+          <Section title="Domande del check-in">
+            <CheckInQuestionsEditor questions={settings.checkInQuestions} />
+          </Section>
+          <Section title="Categorie">
+            <CategoriesEditor />
+          </Section>
+          <Section title="Conti e carte">
+            <AccountsEditor />
+          </Section>
+          <Section title="Palestra">
+            <GymSettings progressionKg={settings.progressionKg} defaultRestSeconds={settings.defaultRestSeconds} />
+          </Section>
           <SnapshotsSection key={settings.snapshotMaxBytes} maxBytes={settings.snapshotMaxBytes} />
         </>
       )}

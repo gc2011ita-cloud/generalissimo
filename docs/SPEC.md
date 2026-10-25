@@ -191,7 +191,9 @@ Le prime due settimane gli obiettivi sono in **osservazione**: l'app registra se
 
 ### Categorie
 
-**Spese**: Tasse · Trasporti · Auto · Spesa alimentare · Ristoranti e bar · Vestiti · Istruzione · Salute · Sport · Vacanze · Altro.
+**Spese** (decise il 25/10/2026, dalle categorie dell'app precedente): Casa · Alimentari · Bar e ristoranti · Serate e svago · Vestiti · Trasporti (benzina, caselli, auto, assicurazione) · Istruzione · Salute · Attività fisica · Viaggi · Telefono (ricariche, assicurazione, apparecchio) · Regali · Tasse. Più "Uscite (storico)", nascosta nell'inserimento: unisce Caffè e Svago dell'app precedente fino a ottobre 2026.
+
+**Tag** sui movimenti, creati dentro l'app (es. le fonti di entrata).
 
 **Entrate**: nessuna categoria predefinita; le crei tu dentro l'app. Le categorie di entrata sono separate da quelle di spesa e non hanno budget.
 
@@ -292,7 +294,7 @@ Quattro aggiunte approvate; le prime due vanno nella Fase 2, le altre due nel mo
 
 - **Pausa obiettivi**: un interruttore "vacanza / malattia / periodo intenso" che sospende gli avvisi e non conta quei giorni nel valore atteso.
 - **Check-in recuperabile**: se salti la sera, la mattina dopo Oggi ti propone di compilare quello di ieri.
-- **Accantonamento tasse della partita IVA**: per ogni entrata professionale l'app calcola la quota da mettere da parte con una percentuale che imposti tu e puoi modificare in qualunque momento da Impostazioni; mostra il totale accantonato contro le scadenze di giugno e novembre.
+- ~~**Accantonamento tasse della partita IVA**~~: tolto il 25/10/2026, lo calcola già il commercialista.
 - **Risparmio del mese**: quanto hai messo da parte ogni mese (entrate − spese) e il totale cumulato dai mesi precedenti fino a quel mese, con grafico mese per mese.
 
 Da valutare più avanti: un riepilogo annuale (anno in numeri: voto medio, ore di studio, allenamenti, spese per categoria, andamento del portafoglio).
@@ -365,9 +367,11 @@ Le scelte di architettura sono chiuse; restano aperti solo i contenuti da inseri
 | Obiettivi | Inseriti a mano; stato calcolato in automatico con avvisi se fuori linea |
 | Spese | L'app spese stile Orange Dog diventa il modulo Finanze |
 | Investimenti | Posizioni inserite a mano, prezzi aggiornati online una volta al giorno |
+| Storico spese | Importato dall'app precedente come totali mensili per categoria (nov 2024 – ott 2026); voci fuori inquadratura ricostruite dai totali annui |
+| Privacy | Blocco con Face ID (passkey locale); i dati personali non entrano mai nel repository |
 
 Ancora da definire:
 
-- [ ] Conti e carte da cui escono le spese.
+- [x] Conti e carte: per ora un solo conto, Principale.
 - [ ] Orari soglia per "a letto presto" e "sveglia presto".
 - [ ] Verifica in Fase 3 che i 13 simboli `.MI` restituiscano il prezzo corretto.
