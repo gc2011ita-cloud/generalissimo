@@ -52,3 +52,46 @@ describe('finanze', () => {
     expect(normalizeTag('#Lavoro  extra ')).toBe('Lavoro extra')
   })
 })
+
+import { categoryBreakdown, categoryColorSlots, periodSeries } from './calc'
+
+describe('home e grafici', () => {
+  const t = (date: string, amount: number, type: TxLike['type'], categoryId: string, tags: string[] = []): TxLike => ({
+    date, amount, type, categoryId, accountId: 'a', tags, deletedAt: null,
+  })
+  const txs = [
+    t('2026-10-01', 300, 'expense', 'casa'),
+    t('2026-10-02', 100, 'expense', 'bar'),
+    t('2026-10-03', 100, 'expense', 'bar'),
+    t('2026-10-05', 1000, 'income', 'stip', ['Fisso']),
+    t('2026-10-06', 500, 'income', 'stip', ['Extra']),
+    t('2026-09-10', 50, 'expense', 'altro'),
+  ]
+
+  it('ripartizione per categoria con percentuali e tag', () => {
+    const b = categoryBreakdown(txs, 'expense', '2026-10-01', '2026-10-31')
+    expect(b.total).toBe(500)
+    expect(b.rows.map((r) => [r.categoryId, r.total, r.pct, r.count])).toEqual([
+      ['casa', 300, 60, 1],
+      ['bar', 200, 40, 2],
+    ])
+    const inc = categoryBreakdown(txs, 'income', '2026-10-01', '2026-10-31')
+    expect(inc.rows[0].tags).toEqual([{ tag: 'Fisso', total: 1000 }, { tag: 'Extra', total: 500 }])
+  })
+
+  it('colori fissi per categoria, le meno usate neutre', () => {
+    const slots = categoryColorSlots(txs, 2)
+    expect(slots.get('casa')).toBe(0)
+    expect(slots.get('bar')).toBe(1)
+    expect(slots.get('altro')).toBe(-1)
+    expect(slots.get('stip')).toBe(0)
+  })
+
+  it('serie per periodo con guadagni e perdite', () => {
+    const s = periodSeries(txs, ['2026-09-01', '2026-10-01'], (d) => `${d.slice(0, 7)}-01`)
+    expect(s).toEqual([
+      { start: '2026-09-01', income: 0, expense: 50, net: -50 },
+      { start: '2026-10-01', income: 1500, expense: 500, net: 1000 },
+    ])
+  })
+})

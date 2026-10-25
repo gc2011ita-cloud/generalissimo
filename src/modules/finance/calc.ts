@@ -104,3 +104,83 @@ export function categoriesByRecentUse<C extends { id: string; order: number }>(
 export function normalizeTag(tag: string) {
   return tag.replace(/^#+/, '').trim().replace(/\s+/g, ' ')
 }
+
+export interface CategoryShare {
+  categoryId: string
+  total: number
+  /** Percentuale sul totale del periodo, arrotondata */
+  pct: number
+  count: number
+  /** Ripartizione per tag (movimenti senza tag sotto '') */
+  tags: { tag: string; total: number }[]
+}
+
+/** Ripartizione per categoria di spese o entrate in un periodo, dalla maggiore. */
+export function categoryBreakdown(
+  txs: readonly TxLike[],
+  type: 'expense' | 'income',
+  from: string,
+  to: string,
+): { total: number; rows: CategoryShare[] } {
+  const map = new Map<string, { total: number; count: number; tags: Map<string, number> }>()
+  for (const t of alive(txs)) {
+    if (t.type !== type || t.date < from || t.date > to) continue
+    const k = t.categoryId ?? ''
+    const cur = map.get(k) ?? { total: 0, count: 0, tags: new Map() }
+    cur.total += t.amount
+    cur.count++
+    const tag = t.tags[0] ?? ''
+    cur.tags.set(tag, (cur.tags.get(tag) ?? 0) + t.amount)
+    map.set(k, cur)
+  }
+  const total = round2([...map.values()].reduce((s, v) => s + v.total, 0))
+  const rows = [...map.entries()]
+    .map(([categoryId, v]) => ({
+      categoryId,
+      total: round2(v.total),
+      pct: total ? Math.round((v.total / total) * 100) : 0,
+      count: v.count,
+      tags: [...v.tags.entries()].map(([tag, t]) => ({ tag, total: round2(t) })).sort((a, b) => b.total - a.total),
+    }))
+    .sort((a, b) => b.total - a.total)
+  return { total, rows }
+}
+
+/**
+ * Colore fisso per categoria: le 7 categorie con più movimenti in assoluto (per tipo)
+ * ricevono uno slot della palette, le altre restano neutre (-1). Il colore segue la
+ * categoria, non la sua posizione nel mese visualizzato.
+ */
+export function categoryColorSlots(txs: readonly TxLike[], slots = 7): Map<string, number> {
+  const out = new Map<string, number>()
+  for (const type of ['expense', 'income'] as const) {
+    const totals = totalsBy(txs, type, 'category', '0000-01-01', '9999-12-31')
+    totals.forEach((t, i) => out.set(t.key, i < slots ? i : -1))
+  }
+  return out
+}
+
+export interface PeriodPoint {
+  start: string
+  income: number
+  expense: number
+  /** Guadagno (positivo) o perdita (negativo) */
+  net: number
+}
+
+/** Entrate, spese e guadagno per ciascun periodo; `startOf` mappa una data al suo periodo. */
+export function periodSeries(
+  txs: readonly TxLike[],
+  starts: readonly string[],
+  startOf: (date: string) => string,
+): PeriodPoint[] {
+  const map = new Map(starts.map((s) => [s, { income: 0, expense: 0 }]))
+  for (const t of alive(txs)) {
+    const cur = map.get(startOf(t.date))
+    if (cur) cur[t.type] += t.amount
+  }
+  return starts.map((start) => {
+    const { income, expense } = map.get(start)!
+    return { start, income: round2(income), expense: round2(expense), net: round2(income - expense) }
+  })
+}

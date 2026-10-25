@@ -9,9 +9,9 @@ describe('promemoria backup', () => {
     expect(daysSinceBackup(new Date(2026, 9, 14, 23).toISOString(), now)).toBe(7)
   })
 
-  it('avvisa oltre 7 giorni', () => {
-    expect(shouldRemindBackup(new Date(2026, 9, 14).toISOString(), now, true)).toBe(false)
-    expect(shouldRemindBackup(new Date(2026, 9, 13).toISOString(), now, true)).toBe(true)
+  it('avvisa una volta al mese (oltre 30 giorni)', () => {
+    expect(shouldRemindBackup(new Date(2026, 8, 21).toISOString(), now, true)).toBe(false)
+    expect(shouldRemindBackup(new Date(2026, 8, 20).toISOString(), now, true)).toBe(true)
   })
 
   it('se il backup non è mai stato fatto avvisa solo se ci sono dati', () => {

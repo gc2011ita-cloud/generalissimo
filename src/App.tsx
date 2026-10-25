@@ -19,10 +19,10 @@ import { LockGate } from './modules/lock/LockGate'
 import { MoreScreen, PlaceholderScreen } from './modules/more/MoreScreen'
 import { QuickAddSheet } from './modules/quickadd/QuickAddSheet'
 import { SettingsScreen } from './modules/settings/SettingsScreen'
-import { TodayScreen } from './modules/today/TodayScreen'
+import { HomeScreen } from './modules/home/HomeScreen'
 
 // Schermate con grafici (Recharts) caricate a parte: l'avvio resta leggero.
-const FinanceStatsScreen = lazy(() => import('./modules/finance/FinanceStatsScreen').then((m) => ({ default: m.FinanceStatsScreen })))
+const ChartsScreen = lazy(() => import('./modules/finance/ChartsScreen').then((m) => ({ default: m.ChartsScreen })))
 const DiaryScreen = lazy(() => import('./modules/diary/DiaryScreen').then((m) => ({ default: m.DiaryScreen })))
 const BodyScreen = lazy(() => import('./modules/gym/BodyScreen').then((m) => ({ default: m.BodyScreen })))
 const ExercisesScreen = lazy(() => import('./modules/gym/ExercisesScreen').then((m) => ({ default: m.ExercisesScreen })))
@@ -50,8 +50,9 @@ function CurrentScreen({ path, query }: { path: string; query: URLSearchParams }
       return <DiaryScreen />
     case '/finance':
       return <FinanceScreen />
+    case '/charts':
     case '/finance/stats':
-      return <FinanceStatsScreen />
+      return <ChartsScreen />
     case '/more':
       return <MoreScreen />
     case '/settings':
@@ -60,8 +61,8 @@ function CurrentScreen({ path, query }: { path: string; query: URLSearchParams }
     case '/stats':
       return <PlaceholderScreen path={path} />
     default:
-      // '/' e '/add' (link profondo: Oggi sotto il foglio "+")
-      return <TodayScreen />
+      // '/' e '/add' (link profondo: Home sotto il foglio "+")
+      return <HomeScreen />
   }
 }
 

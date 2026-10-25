@@ -117,7 +117,7 @@ function BackupSection({ lastBackupAt }: { lastBackupAt: string | null }) {
         {lastBackupAt
           ? `Ultimo backup: ${fmtDateTime(lastBackupAt)}${days ? ` (${days} giorni fa)` : ''}.`
           : 'Nessun backup fatto finora.'}{' '}
-        Salvalo in File o su iCloud Drive: se elimini l’app dalla Home i dati si perdono.
+        Una volta al mese la Home ti propone di salvarlo con un tocco su File o iCloud Drive: se elimini l’app dalla Home i dati si perdono.
       </p>
       <div className="flex flex-wrap gap-2">
         <Button variant="primary" onClick={onExport} disabled={busy}>

@@ -25,7 +25,7 @@ export function DiaryScreen() {
   return (
     <Screen title="Diario" back={<BackButton to="/more" label="Altro" />}>
       <Button variant="primary" onClick={() => navigate('/checkin')}>
-        Chiudi la giornata
+        Check-in di oggi
       </Button>
 
       <SectionTitle>Voto delle giornate</SectionTitle>

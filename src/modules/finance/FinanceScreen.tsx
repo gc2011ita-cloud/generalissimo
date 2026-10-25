@@ -35,7 +35,7 @@ export function FinanceScreen() {
   }, [monthTxs])
 
   return (
-    <Screen title="Finanze" back={<BackButton to="/more" label="Altro" />}>
+    <Screen title="Movimenti" back={<BackButton to="/" label="Home" />}>
       <Card>
         <Stat label="Saldo dei conti oggi" value={formatEUR(balance)} />
       </Card>
@@ -60,7 +60,7 @@ export function FinanceScreen() {
         <Button variant="primary" className="flex-1" onClick={() => setEditing('new')}>
           Aggiungi movimento
         </Button>
-        <Button onClick={() => navigate(`/finance/stats?y=${month.slice(0, 4)}`)}>Analisi</Button>
+        <Button onClick={() => navigate('/charts')}>Grafici</Button>
       </div>
 
       {byDay.length === 0 && <p className="px-1 opacity-60">Nessun movimento in questo mese.</p>}

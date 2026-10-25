@@ -110,12 +110,12 @@ export function CheckInScreen() {
     // La data è unica: un check-in cancellato si riattiva invece di crearne un altro.
     if (data.log) await updateRecord(db.dayLogs, data.log.id, { ...values, deletedAt: null } as never)
     else await createRecord(db.dayLogs, values)
-    showToast('Giornata chiusa')
-    navigate('/')
+    showToast('Check-in salvato')
+    navigate('/diary')
   }
 
   return (
-    <Screen title="Chiudi la giornata" back={<BackButton to="/" label="Oggi" />}>
+    <Screen title="Check-in" back={<BackButton to="/diary" label="Diario" />}>
       <p className="-mt-2 capitalize opacity-65">{dayLabel(date)}</p>
 
       <Card>

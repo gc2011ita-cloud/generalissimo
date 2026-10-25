@@ -41,7 +41,7 @@ PWA **local-first** solo per iPhone: tutti i dati in IndexedDB sul telefono, nes
 ### Backup manuale
 
 - Export completo in JSON da Impostazioni, salvato su File/iCloud Drive con il foglio di condivisione; import per il ripristino.
-- Banner in Oggi se l'ultimo backup ha più di 7 giorni.
+- Promemoria in Home una volta al mese (ultimo backup oltre 30 giorni), con salvataggio a un tocco.
 - Ogni record ha `id` UUID, `createdAt`, `updatedAt`, `deletedAt` (cancellazione logica); schema Dexie versionato con migrazioni.
 
 ### Copie di sicurezza interne
@@ -369,6 +369,9 @@ Le scelte di architettura sono chiuse; restano aperti solo i contenuti da inseri
 | Investimenti | Posizioni inserite a mano, prezzi aggiornati online una volta al giorno |
 | Storico spese | Importato dall'app precedente come totali mensili per categoria (nov 2024 – ott 2026); voci fuori inquadratura ricostruite dai totali annui |
 | Privacy | Blocco con Face ID (passkey locale); i dati personali non entrano mai nel repository |
+| Schermata iniziale | (27/10/2026) Home minimale sulle finanze: saldo totale, Spese/Entrate, periodo (giorno, settimana, mese, anno, libero) e grafico ad anello per categoria; il check-in serale resta nel Diario, senza pulsante in Home |
+| Backup | (27/10/2026) Promemoria mensile in Home con salvataggio a un tocco; iOS non consente a una web app di salvare su iCloud senza un gesto. Le copie interne restano giornaliere e automatiche |
+| Grafici | Colonne di entrate, spese e guadagni/perdite per anno, mese, settimana, giorno; progressione del risparmio cumulato |
 
 Ancora da definire:
 
