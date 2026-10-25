@@ -191,6 +191,20 @@ export interface Price extends BaseRecord {
   fxToEur: number
 }
 
+/**
+ * v3. Aggiornamento manuale di una posizione: quanto hai versato in tutto e quanto
+ * vale a quella data. Il grafico della liquidità investita nasce da questi punti.
+ */
+export interface HoldingValue extends BaseRecord {
+  holdingId: string
+  date: ISODate
+  /** Capitale versato complessivo (€) */
+  invested: number
+  /** Valore di mercato (€) */
+  value: number
+  note: string
+}
+
 export interface HoldingGroup extends BaseRecord {
   name: string
   order: number

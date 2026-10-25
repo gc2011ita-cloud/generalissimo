@@ -20,7 +20,7 @@ beforeEach(async () => {
 
 describe('database', () => {
   it('ha tutte le tabelle del modello dati', () => {
-    expect(DATA_TABLES).toHaveLength(23) // 19 del modello dati + holdingGroups, workoutTemplates, recurring, settings
+    expect(DATA_TABLES).toHaveLength(24) // 19 del modello dati + holdingGroups, workoutTemplates, recurring, settings, holdingValues
     expect(db.tables.map((t) => t.name)).toContain('snapshotBlobs')
   })
 

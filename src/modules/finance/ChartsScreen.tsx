@@ -7,6 +7,8 @@ import { formatEUR, formatEURShort, monthLabel } from '../../lib/format'
 import { periodStarts, rangeFor, shiftAnchor, type PeriodKind } from '../../lib/periods'
 import { monthlySummaries, periodSeries } from './calc'
 import { useTransactions } from './queries'
+import { PortfolioChart } from '../investments/PortfolioChart'
+import { navigate } from '../../lib/router'
 
 const KINDS: [PeriodKind, string, number][] = [
   ['year', 'anno', 0],
@@ -178,6 +180,20 @@ export function ChartsScreen() {
           </ResponsiveContainer>
         </div>
         <p className="mt-2 text-xs opacity-60">Somma delle entrate meno le spese, mese dopo mese.</p>
+      </Card>
+
+      <SectionTitle
+        action={
+          <button type="button" className="min-h-11 text-sm text-ochre-700 dark:text-ochre" onClick={() => navigate('/investments')}>
+            Aggiorna posizioni ›
+          </button>
+        }
+      >
+        Liquidità investita
+      </SectionTitle>
+      <Card>
+        <PortfolioChart />
+        <p className="mt-2 text-xs opacity-60">Valore delle posizioni finanziarie a ogni aggiornamento. Non dipende da entrate e spese.</p>
       </Card>
     </Screen>
   )

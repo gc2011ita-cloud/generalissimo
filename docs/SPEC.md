@@ -372,6 +372,7 @@ Le scelte di architettura sono chiuse; restano aperti solo i contenuti da inseri
 | Schermata iniziale | (27/10/2026) Home minimale sulle finanze: saldo totale, Spese/Entrate, periodo (giorno, settimana, mese, anno, libero) e grafico ad anello per categoria; il check-in serale resta nel Diario, senza pulsante in Home |
 | Backup | (27/10/2026) Promemoria mensile in Home con salvataggio a un tocco; iOS non consente a una web app di salvare su iCloud senza un gesto. Le copie interne restano giornaliere e automatiche |
 | Grafici | Colonne di entrate, spese e guadagni/perdite per anno, mese, settimana, giorno; progressione del risparmio cumulato |
+| Investimenti | (27/10/2026) Anticipati in forma manuale: posizioni con nome, tipo e ticker facoltativo; a ogni aggiornamento si registrano valore e capitale versato (tabella `holdingValues`, schema v3). Grafico della liquidità investita sotto la progressione del risparmio. Del tutto separati da entrate e spese. Prezzi automatici restano in Fase 3 |
 
 Ancora da definire:
 

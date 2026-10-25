@@ -155,7 +155,7 @@ function ExerciseEditor({ id, onClose }: { id: string; onClose: () => void }) {
   return (
     <Sheet title="Modifica esercizio" onClose={onClose}>
       <Field label="Nome"><TextInput value={name} onChange={setName} /></Field>
-      <Field label="Gruppo muscolare">
+      <Field label="Gruppo muscolare" group>
         <div className="flex flex-wrap gap-2">
           {MUSCLE_GROUPS.map((m) => (
             <Chip key={m} selected={m === muscle} onClick={() => setMuscle(m)}>{m}</Chip>

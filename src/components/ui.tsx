@@ -65,13 +65,25 @@ export function Banner({ children, tone = 'warn' }: { children: ReactNode; tone?
 const inputClass =
   'w-full rounded-xl bg-ox-900/6 px-3 py-2.5 text-base outline-none focus:ring-2 focus:ring-ochre dark:bg-cream/10'
 
-export function Field({ label, children, hint }: { label: string; children: ReactNode; hint?: string }) {
-  return (
-    <label className="block">
+/**
+ * Campo con etichetta. Con `group` (gruppi di pulsanti, chip) usa un div con role=group:
+ * un <label> attorno a più pulsanti darebbe il suo testo al primo pulsante e lo
+ * attiverebbe toccando l'etichetta.
+ */
+export function Field({ label, children, hint, group = false }: { label: string; children: ReactNode; hint?: string; group?: boolean }) {
+  const content = (
+    <>
       <span className="mb-1 block text-sm font-medium text-ox-700 dark:text-cream/70">{label}</span>
       {children}
       {hint && <span className="mt-1 block text-xs opacity-60">{hint}</span>}
-    </label>
+    </>
+  )
+  return group ? (
+    <div role="group" aria-label={label} className="block">
+      {content}
+    </div>
+  ) : (
+    <label className="block">{content}</label>
   )
 }
 

@@ -150,7 +150,7 @@ export function TransactionForm({
               </select>
             </Field>
           )}
-          <Field label="Tag">
+          <Field label="Tag" group>
             <div className="mb-2 flex flex-wrap gap-2">
               {suggestedTags.map((t) => (
                 <Chip key={t} onClick={() => toggleTag(t)}>

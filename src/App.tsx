@@ -23,6 +23,7 @@ import { HomeScreen } from './modules/home/HomeScreen'
 
 // Schermate con grafici (Recharts) caricate a parte: l'avvio resta leggero.
 const ChartsScreen = lazy(() => import('./modules/finance/ChartsScreen').then((m) => ({ default: m.ChartsScreen })))
+const InvestmentsScreen = lazy(() => import('./modules/investments/InvestmentsScreen').then((m) => ({ default: m.InvestmentsScreen })))
 const DiaryScreen = lazy(() => import('./modules/diary/DiaryScreen').then((m) => ({ default: m.DiaryScreen })))
 const BodyScreen = lazy(() => import('./modules/gym/BodyScreen').then((m) => ({ default: m.BodyScreen })))
 const ExercisesScreen = lazy(() => import('./modules/gym/ExercisesScreen').then((m) => ({ default: m.ExercisesScreen })))
@@ -53,6 +54,8 @@ function CurrentScreen({ path, query }: { path: string; query: URLSearchParams }
     case '/charts':
     case '/finance/stats':
       return <ChartsScreen />
+    case '/investments':
+      return <InvestmentsScreen />
     case '/more':
       return <MoreScreen />
     case '/settings':

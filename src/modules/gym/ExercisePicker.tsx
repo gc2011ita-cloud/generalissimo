@@ -29,7 +29,7 @@ export function ExercisePicker({ onPick, onClose }: { onPick: (id: string) => vo
         <Button onClick={() => setCreating(true)}>+ Crea “{search.trim()}”</Button>
       )}
       {creating && (
-        <Field label="Gruppo muscolare">
+        <Field label="Gruppo muscolare" group>
           <div className="flex flex-wrap gap-2">
             {MUSCLE_GROUPS.map((m) => (
               <Chip key={m} selected={m === muscle} onClick={() => setMuscle(m)}>

@@ -209,7 +209,7 @@ function AccountEditor({ account, onClose }: { account?: Account; onClose: () =>
 export function GymSettings({ progressionKg, defaultRestSeconds }: { progressionKg: number; defaultRestSeconds: number }) {
   return (
     <div className="space-y-3">
-      <Field label="Incremento suggerito">
+      <Field label="Incremento suggerito" group>
         <div className="flex flex-wrap gap-2">
           {[1, 1.25, 2.5, 5].map((kg) => (
             <Chip key={kg} selected={kg === progressionKg} onClick={() => saveSettings({ progressionKg: kg })}>
@@ -218,7 +218,7 @@ export function GymSettings({ progressionKg, defaultRestSeconds }: { progression
           ))}
         </div>
       </Field>
-      <Field label="Recupero negli allenamenti liberi">
+      <Field label="Recupero negli allenamenti liberi" group>
         <div className="flex flex-wrap gap-2">
           {[60, 90, 120, 180].map((s) => (
             <Chip key={s} selected={s === defaultRestSeconds} onClick={() => saveSettings({ defaultRestSeconds: s })}>

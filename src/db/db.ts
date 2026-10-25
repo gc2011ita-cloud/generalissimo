@@ -14,6 +14,7 @@ import type {
   Holding,
   HoldingGroup,
   HoldingMove,
+  HoldingValue,
   Price,
   Recurring,
   Settings,
@@ -54,6 +55,7 @@ export type GuidodelbueDB = Dexie & {
   settings: EntityTable<Settings, 'id'>
   snapshots: EntityTable<Snapshot, 'id'>
   snapshotBlobs: EntityTable<SnapshotBlob, 'id'>
+  holdingValues: EntityTable<HoldingValue, 'id'>
 }
 
 // Versione 1. Ogni modifica allo schema = nuova db.version(n) con .upgrade(),
@@ -92,7 +94,12 @@ const SCHEMA_V2 = {
   workouts: 'id, date, templateId, type, endedAt, updatedAt',
 }
 
-export const SCHEMA_VERSION = 2
+// Versione 3: aggiornamenti manuali del valore delle posizioni finanziarie.
+const SCHEMA_V3 = {
+  holdingValues: 'id, holdingId, date, [holdingId+date], updatedAt',
+}
+
+export const SCHEMA_VERSION = 3
 
 export const db = new Dexie('guidodelbue') as GuidodelbueDB
 db.version(1).stores(SCHEMA_V1)
@@ -108,10 +115,11 @@ db.version(2)
         })
     }
   })
+db.version(3).stores(SCHEMA_V3)
 
-export type TableName = keyof typeof SCHEMA_V1
+export type TableName = keyof typeof SCHEMA_V1 | keyof typeof SCHEMA_V3
 
 /** Tabelle con i dati dell'utente: entrano nel backup JSON e nelle copie interne. */
-export const DATA_TABLES = (Object.keys(SCHEMA_V1) as TableName[]).filter(
+export const DATA_TABLES = ([...Object.keys(SCHEMA_V1), ...Object.keys(SCHEMA_V3)] as TableName[]).filter(
   (t) => t !== 'snapshots' && t !== 'snapshotBlobs',
 )
