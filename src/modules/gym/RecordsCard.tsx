@@ -9,6 +9,7 @@ import { useChartColors } from '../../lib/chartColors'
 import { toISODate } from '../../lib/dates'
 import { dayLabel, formatNumber, parseDecimal } from '../../lib/format'
 import { showToast } from '../../lib/toast'
+import { groupByArea } from './areas'
 import { recordsByExercise } from './calc'
 import { ExercisePicker } from './ExercisePicker'
 import { useExerciseMap } from './queries'
@@ -22,6 +23,7 @@ export function RecordsCard() {
   if (!records || !exercises) return null
   const byEx = recordsByExercise(records)
   const list = [...byEx.entries()].sort((a, b) => (exercises.get(a[0])?.name ?? '').localeCompare(exercises.get(b[0])?.name ?? ''))
+  const areas = groupByArea(list, ([id]) => exercises.get(id)?.muscleGroup ?? '')
 
   return (
     <Card>
@@ -32,21 +34,26 @@ export function RecordsCard() {
         </button>
       </div>
       {list.length === 0 && <p className="text-sm opacity-65">Aggiungi un esercizio con il peso massimo e le ripetizioni: lo aggiorni quando migliori.</p>}
-      <div className="-mx-4 divide-y divide-ox-900/8 dark:divide-cream/10">
-        {list.map(([id, recs]) => (
-          <ListRow
-            key={id}
-            onClick={() => setOpen(id)}
-            title={exercises.get(id)?.name ?? 'Esercizio'}
-            subtitle={`agg. ${dayLabel(recs[0].date)}${recs.length > 1 ? ` · ${recs.length} aggiornamenti` : ''}`}
-            right={
-              <span className="font-semibold tabular-nums">
-                {formatNumber(recs[0].weight)} kg × {recs[0].reps}
-              </span>
-            }
-          />
-        ))}
-      </div>
+      {areas.map(([area, items]) => (
+        <section key={area} aria-label={area} className="mt-2">
+          <h3 className="pt-2 text-xs font-semibold tracking-wide uppercase opacity-60">{area}</h3>
+          <div className="-mx-4 divide-y divide-ox-900/8 dark:divide-cream/10">
+            {items.map(([id, recs]) => (
+              <ListRow
+                key={id}
+                onClick={() => setOpen(id)}
+                title={exercises.get(id)?.name ?? 'Esercizio'}
+                subtitle={`agg. ${dayLabel(recs[0].date)}${recs.length > 1 ? ` · ${recs.length} aggiornamenti` : ''}`}
+                right={
+                  <span className="font-semibold tabular-nums">
+                    {formatNumber(recs[0].weight)} kg × {recs[0].reps}
+                  </span>
+                }
+              />
+            ))}
+          </div>
+        </section>
+      ))}
       {picking && (
         <ExercisePicker
           onClose={() => setPicking(false)}

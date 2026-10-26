@@ -4,7 +4,7 @@ import { newId } from '../../db/repo'
 import { saveSettings } from '../../db/settings'
 import type { Pause, PauseReason } from '../../db/schema'
 import { toISODate } from '../../lib/dates'
-import { dayLabel, formatEURShort, monthLabel } from '../../lib/format'
+import { dayLabel, monthLabel } from '../../lib/format'
 import { navigate } from '../../lib/router'
 import { showToast } from '../../lib/toast'
 import { StatusPill } from './labels'
@@ -60,32 +60,6 @@ export function GoalsScreen() {
         {o.sport.status ? <StatusPill status={o.sport.status} /> : <Button onClick={() => navigate('/gym')}>Calendario</Button>}
       </Card>
 
-      {o.budgets.length > 0 && (
-        <>
-          <SectionTitle>Budget del mese</SectionTitle>
-          <List>
-            {o.budgets.map((b) => (
-              <ListRow
-                key={b.id}
-                title={`${b.icon} ${b.name}`}
-                subtitle={
-                  <span className="mt-1 block h-1.5 rounded-full bg-ox-900/8 dark:bg-cream/10">
-                    <span className={`block h-1.5 rounded-full ${b.spent > b.budget ? 'bg-red-600' : 'bg-emerald-600'}`} style={{ width: `${Math.min(100, (b.spent / b.budget) * 100)}%` }} />
-                  </span>
-                }
-                right={
-                  <div className="flex flex-col items-end gap-1">
-                    <span className="text-sm tabular-nums">
-                      {formatEURShort(b.spent)} / {formatEURShort(b.budget)}
-                    </span>
-                    <StatusPill status={b.status} text={b.status === 'atRisk' ? 'Sforato' : b.status === 'behind' ? 'Proiezione oltre' : undefined} />
-                  </div>
-                }
-              />
-            ))}
-          </List>
-        </>
-      )}
 
       <SectionTitle action={<button type="button" className="min-h-11 text-sm text-ochre-700 dark:text-ochre" onClick={() => setPauses(true)}>Gestisci</button>}>
         Vacanze e trasferte

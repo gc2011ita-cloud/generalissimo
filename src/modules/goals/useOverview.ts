@@ -4,26 +4,23 @@ import { getSettings } from '../../db/settings'
 import type { GoalStatus } from '../../db/schema'
 import { daysBetween, toISODate } from '../../lib/dates'
 import { rangeFor } from '../../lib/periods'
-import { sumBetween } from '../finance/calc'
 import { countBetween, sportDaySet } from '../sport/calc'
 import { SPORT_KEY } from '../sport/queries'
 import { STUDY_FILTER } from '../study/queries'
-import { NEEDS_ATTENTION, activeDays, effectiveStart, budgetStatus, elapsedFraction, isPaused, progressStatus } from './calc'
+import { NEEDS_ATTENTION, activeDays, effectiveStart, elapsedFraction, isPaused, progressStatus } from './calc'
 
-/** Riepilogo di tutto ciò che ha un obiettivo: studio del mese, sport della settimana, budget. */
+/** Riepilogo degli obiettivi: studio del mese e sport della settimana. */
 export function useGoalsOverview() {
   return useLiveQuery(async () => {
     const today = toISODate(new Date())
     const month = rangeFor('month', today)
     const week = rangeFor('week', today)
-    const [settings, goals, updates, logs, workouts, categories, txs] = await Promise.all([
+    const [settings, goals, updates, logs, workouts] = await Promise.all([
       getSettings(),
       db.goals.toArray(),
       db.goalUpdates.toArray(),
       db.dayLogs.toArray(),
       db.workouts.toArray(),
-      db.categories.toArray(),
-      db.transactions.where('date').between(month.from, month.to, true, true).toArray(),
     ])
     const { pauses, goalThresholds: thresholds } = settings
     const paused = pauses.find((p) => today >= p.from && today <= p.to) ?? null
@@ -61,18 +58,10 @@ export function useGoalsOverview() {
         : null,
     }
 
-    const fraction = elapsedFraction(month.from, month.to, today)
-    const budgets = categories
-      .filter((c) => c.deletedAt === null && c.type === 'expense' && c.monthlyBudget)
-      .map((c) => {
-        const spent = sumBetween(txs.filter((t) => t.categoryId === c.id), 'expense', month.from, month.to)
-        return { id: c.id, name: c.name, icon: c.icon, spent, budget: c.monthlyBudget!, status: budgetStatus(spent, c.monthlyBudget!, fraction, false) }
-      })
-      .sort((a, b) => b.spent / b.budget - a.spent / a.budget)
 
-    const statuses = [...study.map((s) => s.status), ...(sport.status ? [sport.status] : []), ...budgets.map((b) => b.status)]
-    // In pausa gli avvisi tacciono (il budget resta: le spese in vacanza contano).
-    const attention = statuses.filter((s, i) => NEEDS_ATTENTION.includes(s) && (!paused || i >= study.length + (sport.status ? 1 : 0))).length
-    return { study, sport, budgets, attention, paused, pauses, isPausedToday: isPaused(today, pauses), sportTarget: target }
+    // In pausa (vacanza, trasferta, malattia) gli avvisi tacciono.
+    const statuses = paused ? [] : [...study.map((s) => s.status), ...(sport.status ? [sport.status] : [])]
+    const attention = statuses.filter((s) => NEEDS_ATTENTION.includes(s)).length
+    return { study, sport, attention, paused, pauses, isPausedToday: isPaused(today, pauses), sportTarget: target }
   })
 }

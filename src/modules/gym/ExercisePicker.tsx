@@ -3,6 +3,7 @@ import { Button, Chip, Field, List, ListRow, Sheet, TextInput } from '../../comp
 import { db } from '../../db/db'
 import { createRecord } from '../../db/repo'
 import { MUSCLE_GROUPS } from '../../db/seed'
+import { groupByArea } from './areas'
 import { useExercises } from './queries'
 
 /** Scelta di un esercizio, con ricerca e creazione al volo. */
@@ -14,8 +15,7 @@ export function ExercisePicker({ onPick, onClose }: { onPick: (id: string) => vo
 
   const q = search.trim().toLowerCase()
   const filtered = (exercises ?? []).filter((e) => !q || e.name.toLowerCase().includes(q) || e.muscleGroup.toLowerCase().includes(q))
-  const groups = MUSCLE_GROUPS.map((m) => [m, filtered.filter((e) => e.muscleGroup === m)] as const).filter(([, l]) => l.length)
-  const others = filtered.filter((e) => !(MUSCLE_GROUPS as readonly string[]).includes(e.muscleGroup))
+  const groups = groupByArea(filtered, (e) => e.muscleGroup)
 
   const create = async () => {
     const e = await createRecord(db.exercises, { name: search.trim(), muscleGroup: muscle, equipment: '' })
@@ -42,12 +42,12 @@ export function ExercisePicker({ onPick, onClose }: { onPick: (id: string) => vo
           </Button>
         </Field>
       )}
-      {[...groups, ...(others.length ? ([['Altro', others]] as const) : [])].map(([m, list]) => (
+      {groups.map(([m, list]) => (
         <div key={m} className="space-y-2">
           <h3 className="px-1 text-sm font-semibold opacity-70">{m}</h3>
           <List>
             {list.map((e) => (
-              <ListRow key={e.id} title={e.name} subtitle={e.equipment || undefined} onClick={() => onPick(e.id)} />
+              <ListRow key={e.id} title={e.name} subtitle={[e.muscleGroup, e.equipment].filter(Boolean).join(' · ')} onClick={() => onPick(e.id)} />
             ))}
           </List>
         </div>
