@@ -12,6 +12,10 @@ import { CheckInScreen } from './modules/diary/CheckInScreen'
 import { FinanceScreen } from './modules/finance/FinanceScreen'
 import { GoalsScreen } from './modules/goals/GoalsScreen'
 import { GymScreen } from './modules/gym/GymScreen'
+import { SessionsScreen } from './modules/gym/SessionsScreen'
+import { StudyScreen } from './modules/study/StudyScreen'
+import { RecurringScreen } from './modules/finance/RecurringScreen'
+import { scheduleRecurring } from './modules/finance/recurringRunner'
 import { RestTimerBar } from './modules/gym/RestTimerBar'
 import { SessionScreen } from './modules/gym/SessionScreen'
 import { TemplatesScreen } from './modules/gym/TemplatesScreen'
@@ -25,7 +29,6 @@ import { HomeScreen } from './modules/home/HomeScreen'
 const ChartsScreen = lazy(() => import('./modules/finance/ChartsScreen').then((m) => ({ default: m.ChartsScreen })))
 const InvestmentsScreen = lazy(() => import('./modules/investments/InvestmentsScreen').then((m) => ({ default: m.InvestmentsScreen })))
 const DiaryScreen = lazy(() => import('./modules/diary/DiaryScreen').then((m) => ({ default: m.DiaryScreen })))
-const BodyScreen = lazy(() => import('./modules/gym/BodyScreen').then((m) => ({ default: m.BodyScreen })))
 const ExercisesScreen = lazy(() => import('./modules/gym/ExercisesScreen').then((m) => ({ default: m.ExercisesScreen })))
 const ExerciseDetailScreen = lazy(() => import('./modules/gym/ExercisesScreen').then((m) => ({ default: m.ExerciseDetailScreen })))
 
@@ -43,8 +46,12 @@ function CurrentScreen({ path, query }: { path: string; query: URLSearchParams }
       return <ExercisesScreen />
     case '/gym/exercise':
       return <ExerciseDetailScreen key={query.get('id')} />
-    case '/gym/body':
-      return <BodyScreen />
+    case '/gym/sessions':
+      return <SessionsScreen />
+    case '/study':
+      return <StudyScreen />
+    case '/recurring':
+      return <RecurringScreen />
     case '/checkin':
       return <CheckInScreen key={query.get('date') ?? 'oggi'} />
     case '/diary':
@@ -60,7 +67,6 @@ function CurrentScreen({ path, query }: { path: string; query: URLSearchParams }
       return <MoreScreen />
     case '/settings':
       return <SettingsScreen />
-    case '/study':
     case '/stats':
       return <PlaceholderScreen path={path} />
     default:
@@ -78,7 +84,12 @@ export default function App() {
   useEffect(() => {
     navigator.storage?.persist?.().catch(() => {})
     ensureSeedData().catch((e) => console.error('Dati di partenza non creati', e))
-    return scheduleAutoSnapshots()
+    const stopRecurring = scheduleRecurring()
+    const stopSnapshots = scheduleAutoSnapshots()
+    return () => {
+      stopRecurring()
+      stopSnapshots()
+    }
   }, [])
 
   useEffect(() => window.scrollTo(0, 0), [path])

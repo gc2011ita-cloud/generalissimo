@@ -6,6 +6,7 @@ import type {
   Category,
   DayLog,
   Exercise,
+  ExerciseRecord,
   Goal,
   GoalStep,
   GoalUpdate,
@@ -56,6 +57,7 @@ export type GuidodelbueDB = Dexie & {
   snapshots: EntityTable<Snapshot, 'id'>
   snapshotBlobs: EntityTable<SnapshotBlob, 'id'>
   holdingValues: EntityTable<HoldingValue, 'id'>
+  exerciseRecords: EntityTable<ExerciseRecord, 'id'>
 }
 
 // Versione 1. Ogni modifica allo schema = nuova db.version(n) con .upgrade(),
@@ -99,7 +101,12 @@ const SCHEMA_V3 = {
   holdingValues: 'id, holdingId, date, [holdingId+date], updatedAt',
 }
 
-export const SCHEMA_VERSION = 3
+// Versione 4: massimali degli esercizi.
+const SCHEMA_V4 = {
+  exerciseRecords: 'id, exerciseId, date, [exerciseId+date], updatedAt',
+}
+
+export const SCHEMA_VERSION = 4
 
 export const db = new Dexie('guidodelbue') as GuidodelbueDB
 db.version(1).stores(SCHEMA_V1)
@@ -116,10 +123,11 @@ db.version(2)
     }
   })
 db.version(3).stores(SCHEMA_V3)
+db.version(4).stores(SCHEMA_V4)
 
-export type TableName = keyof typeof SCHEMA_V1 | keyof typeof SCHEMA_V3
+export type TableName = keyof typeof SCHEMA_V1 | keyof typeof SCHEMA_V3 | keyof typeof SCHEMA_V4
 
 /** Tabelle con i dati dell'utente: entrano nel backup JSON e nelle copie interne. */
-export const DATA_TABLES = ([...Object.keys(SCHEMA_V1), ...Object.keys(SCHEMA_V3)] as TableName[]).filter(
+export const DATA_TABLES = ([...Object.keys(SCHEMA_V1), ...Object.keys(SCHEMA_V3), ...Object.keys(SCHEMA_V4)] as TableName[]).filter(
   (t) => t !== 'snapshots' && t !== 'snapshotBlobs',
 )

@@ -54,7 +54,7 @@ export function SessionScreen() {
   if (workout === undefined || !gym || !exercises || !settings) return null
   if (!workout) {
     return (
-      <Screen title="Allenamento" back={<BackButton to="/gym" label="Palestra" />}>
+      <Screen title="Allenamento" back={<BackButton to="/gym/sessions" label="Allenamenti" />}>
         <p>Allenamento non trovato.</p>
       </Screen>
     )
@@ -63,19 +63,19 @@ export function SessionScreen() {
   const finish = async () => {
     await finishSession(id)
     showToast(`Allenamento salvato: ${mySets.length} serie`)
-    navigate('/gym')
+    navigate('/gym/sessions')
   }
 
   const discard = async () => {
     await softDelete(db.workouts, id)
     showToast('Allenamento eliminato', () => undoDelete(db.workouts, id))
-    navigate('/gym')
+    navigate('/gym/sessions')
   }
 
   return (
     <Screen
       title={template?.name ?? (active ? 'Allenamento libero' : 'Allenamento')}
-      back={<BackButton to="/gym" label="Palestra" />}
+      back={<BackButton to="/gym/sessions" label="Allenamenti" />}
     >
       <p className="-mt-2 opacity-65">
         {dayLabel(workout.date)}

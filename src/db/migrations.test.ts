@@ -23,7 +23,7 @@ describe('migrazioni', () => {
     v1.close()
 
     await db.open() // esegue l'upgrade reale di db.ts
-    expect(db.verno).toBe(3)
+    expect(db.verno).toBe(4)
     expect(await db.transactions.get('t1')).toEqual({ id: 't1', date: '2026-10-01', amount: 12.5, tags: [] })
     expect(await db.categories.get('c1')).toEqual({ id: 'c1', name: 'Casa', order: 0, hidden: false })
     expect((await db.workouts.get('w1'))?.endedAt).toBe('2026-10-01T10:00:00Z')

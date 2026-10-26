@@ -166,6 +166,16 @@ export function HomeScreen() {
                 <span className="w-24 text-right font-semibold tabular-nums">{formatEURShort(r.total)}</span>
                 <span className={`text-sm opacity-50 transition-transform ${open ? 'rotate-180' : ''}`} aria-hidden>⌄</span>
               </button>
+              {type === 'expense' && kind === 'month' && c?.monthlyBudget ? (
+                <div className="-mt-1 flex items-center gap-2 px-3 pb-2 text-xs">
+                  <div className="h-1.5 flex-1 rounded-full bg-ox-900/8 dark:bg-cream/10">
+                    <div className={`h-1.5 rounded-full ${r.total > c.monthlyBudget ? 'bg-red-600' : 'bg-emerald-600'}`} style={{ width: `${Math.min(100, (r.total / c.monthlyBudget) * 100)}%` }} />
+                  </div>
+                  <span className={`tabular-nums ${r.total > c.monthlyBudget ? 'font-semibold text-red-700 dark:text-red-400' : 'opacity-60'}`}>
+                    {r.total > c.monthlyBudget ? `sforato di ${formatEURShort(r.total - c.monthlyBudget)}` : `budget ${formatEURShort(c.monthlyBudget)}`}
+                  </span>
+                </div>
+              ) : null}
               {open && (
                 <div className="border-t border-ox-900/8 px-3 pb-2 dark:border-cream/10">
                   {tags.length > 0 && (

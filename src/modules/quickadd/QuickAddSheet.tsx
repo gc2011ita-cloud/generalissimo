@@ -2,34 +2,35 @@
 
 import { useEffect, useState } from 'react'
 import { Sheet } from '../../components/ui'
+import { toISODate } from '../../lib/dates'
 import { navigate } from '../../lib/router'
+import { showToast } from '../../lib/toast'
 import { TransactionForm } from '../finance/TransactionForm'
-import { BodyMetricForm } from '../gym/BodyMetricForm'
+import { setSport } from '../sport/queries'
 
 export const QUICK_ADD_ITEMS = [
-  { tipo: 'spesa', label: 'Spesa', emoji: '💶', ready: true },
-  { tipo: 'entrata', label: 'Entrata', emoji: '💼', ready: true },
-  { tipo: 'allenamento', label: 'Allenamento', emoji: '🏋️', ready: true },
-  { tipo: 'peso', label: 'Peso', emoji: '⚖️', ready: true },
-  { tipo: 'nota', label: 'Nota da studiare', emoji: '📚', ready: false },
-  { tipo: 'obiettivo', label: 'Aggiorna obiettivo', emoji: '🎯', ready: false },
-  { tipo: 'task', label: 'Task', emoji: '✅', ready: false },
+  { tipo: 'spesa', label: 'Spesa', emoji: '💶' },
+  { tipo: 'entrata', label: 'Entrata', emoji: '💼' },
+  { tipo: 'sport', label: 'Sport fatto oggi', emoji: '🏃' },
+  { tipo: 'studio', label: 'Progresso studio', emoji: '📚' },
 ] as const
 
 export function QuickAddSheet({ open, tipo, onClose }: { open: boolean; tipo: string | null; onClose: () => void }) {
   const [selected, setSelected] = useState<string | null>(tipo)
   useEffect(() => setSelected(tipo), [tipo, open])
 
-  // L'allenamento si avvia dalla schermata Palestra (scelta della scheda).
+  // Azioni immediate: sport segnato con un tocco, studio apre la sua schermata.
   useEffect(() => {
-    if (open && selected === 'allenamento') {
-      setSelected(null)
-      onClose()
-      navigate('/gym')
-    }
+    if (!open || (selected !== 'sport' && selected !== 'studio')) return
+    setSelected(null)
+    onClose()
+    if (selected === 'sport') {
+      const today = toISODate(new Date())
+      void setSport(today, true).then(() => showToast('Sport di oggi segnato', () => setSport(today, undefined)))
+    } else navigate('/study')
   }, [open, selected, onClose])
 
-  if (!open || selected === 'allenamento') return null
+  if (!open || selected === 'sport' || selected === 'studio') return null
 
   const close = () => {
     setSelected(null)
@@ -44,33 +45,23 @@ export function QuickAddSheet({ open, tipo, onClose }: { open: boolean; tipo: st
     )
   }
 
-  if (selected === 'peso') {
-    return (
-      <Sheet title="Peso" onClose={close}>
-        <BodyMetricForm onDone={close} />
-      </Sheet>
-    )
-  }
-
   return (
     <Sheet title="Aggiungi" onClose={close}>
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-2 gap-3">
         {QUICK_ADD_ITEMS.map((item) => (
           <button
             key={item.tipo}
             type="button"
-            disabled={!item.ready}
             onClick={() => setSelected(item.tipo)}
-            className="flex flex-col items-center gap-1 rounded-2xl bg-white p-3 text-center text-sm font-medium active:scale-95 disabled:opacity-40 dark:bg-ox-800"
+            className="flex flex-col items-center gap-1 rounded-2xl bg-white p-4 text-center font-medium active:scale-95 dark:bg-ox-800"
           >
-            <span className="text-2xl" aria-hidden>
+            <span className="text-3xl" aria-hidden>
               {item.emoji}
             </span>
             {item.label}
           </button>
         ))}
       </div>
-      <p className="text-sm text-ox-700 dark:text-cream/60">Nota, obiettivi e task arrivano con la Fase 2.</p>
     </Sheet>
   )
 }

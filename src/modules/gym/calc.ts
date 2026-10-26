@@ -120,3 +120,23 @@ export function suggestWeight(prev: readonly SetLike[], targetReps: number, incr
   const allDone = ws.every((s) => s.reps! >= targetReps)
   return { weight: allDone ? round2(top + incrementKg) : top, increased: allDone }
 }
+
+export interface RecordLike {
+  exerciseId: string
+  date: string
+  reps: number
+  weight: number
+  updatedAt: string
+  deletedAt: string | null
+}
+
+/** Massimali per esercizio, dal più recente; il primo è quello attuale. */
+export function recordsByExercise<R extends RecordLike>(records: readonly R[]): Map<string, R[]> {
+  const out = new Map<string, R[]>()
+  for (const r of records) {
+    if (r.deletedAt !== null) continue
+    out.set(r.exerciseId, [...(out.get(r.exerciseId) ?? []), r])
+  }
+  for (const list of out.values()) list.sort((a, b) => b.date.localeCompare(a.date) || b.updatedAt.localeCompare(a.updatedAt))
+  return out
+}

@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { navigate, useLocation } from '../lib/router'
+import { useGoalsOverview } from '../modules/goals/useOverview'
 
 const icon = (d: string) => (
   <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
@@ -10,14 +11,16 @@ const icon = (d: string) => (
 const TABS: { path: string; label: string; icon: ReactNode; match: (p: string) => boolean }[] = [
   { path: '/', label: 'Home', icon: icon('M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z'), match: (p) => p === '/' || p === '/charts' },
   { path: '/goals', label: 'Obiettivi', icon: icon('M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8z'), match: (p) => p.startsWith('/goals') },
-  { path: '/gym', label: 'Palestra', icon: icon('M6 7v10M18 7v10M3 10v4M21 10v4M6 12h12'), match: (p) => p.startsWith('/gym') },
+  { path: '/gym', label: 'Sport', icon: icon('M6 7v10M18 7v10M3 10v4M21 10v4M6 12h12'), match: (p) => p.startsWith('/gym') },
   { path: '/more', label: 'Altro', icon: icon('M5 12h.01M12 12h.01M19 12h.01'), match: (p) => !['/', '/add', '/charts'].includes(p) && !p.startsWith('/goals') && !p.startsWith('/gym') },
 ]
 
 export function TabBar({ onAdd }: { onAdd: () => void }) {
   const { path } = useLocation()
+  const attention = useGoalsOverview()?.attention ?? 0
   const tab = (t: (typeof TABS)[number]) => {
     const active = t.match(path)
+    const badge = t.path === '/goals' && attention > 0 ? attention : 0
     return (
       <button
         key={t.path}
@@ -28,7 +31,14 @@ export function TabBar({ onAdd }: { onAdd: () => void }) {
           active ? 'text-ox-900 dark:text-ochre' : 'text-ox-900/45 dark:text-cream/45'
         }`}
       >
-        {t.icon}
+        <span className="relative">
+          {t.icon}
+          {badge > 0 && (
+            <span className="absolute -top-1.5 -right-2.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-600 px-1 text-[10px] font-bold text-white" aria-label={`${badge} da guardare`}>
+              {badge}
+            </span>
+          )}
+        </span>
         {t.label}
       </button>
     )

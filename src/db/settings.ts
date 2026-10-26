@@ -32,6 +32,8 @@ export function defaultSettings(): Settings {
     lockCredentialId: null,
     progressionKg: 2.5,
     defaultRestSeconds: 120,
+    sportWeeklyTarget: null,
+    pauses: [],
   }
 }
 

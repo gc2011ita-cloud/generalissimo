@@ -260,6 +260,15 @@ export interface WorkoutSet extends BaseRecord {
   isWarmup: boolean
 }
 
+/** v4. Massimale di un esercizio a una data: si aggiunge un record a ogni progresso. */
+export interface ExerciseRecord extends BaseRecord {
+  exerciseId: string
+  date: ISODate
+  reps: number
+  weight: number
+  note: string
+}
+
 export interface WorkoutTemplateItem {
   exerciseId: string
   sets: number
@@ -309,6 +318,20 @@ export interface Settings extends BaseRecord {
   /** Incremento suggerito quando completi tutte le ripetizioni previste */
   progressionKg: number
   defaultRestSeconds: number
+  // v4
+  /** Obiettivo di giorni di sport a settimana (null = nessuno) */
+  sportWeeklyTarget: number | null
+  /** Periodi di pausa: quei giorni non contano per sport e obiettivi di studio */
+  pauses: Pause[]
+}
+
+export type PauseReason = 'vacation' | 'trip' | 'sick'
+
+export interface Pause {
+  id: string
+  from: ISODate
+  to: ISODate
+  reason: PauseReason
 }
 
 /** Domanda sì/no del check-in. `auto`: risposta precompilata da un altro modulo. */

@@ -51,3 +51,16 @@ describe('palestra', () => {
     expect(suggestWeight([], 8, 2.5)).toBeNull()
   })
 })
+
+import { recordsByExercise } from './calc'
+
+describe('massimali', () => {
+  it('per esercizio, dal più recente, esclusi gli eliminati', () => {
+    const r = (exerciseId: string, date: string, weight: number, deletedAt: string | null = null) => ({
+      exerciseId, date, reps: 5, weight, updatedAt: `${date}T10:00:00Z`, deletedAt,
+    })
+    const m = recordsByExercise([r('panca', '2026-09-01', 80), r('panca', '2026-10-01', 85), r('panca', '2026-10-15', 90, 'x'), r('squat', '2026-10-01', 120)])
+    expect(m.get('panca')!.map((x) => x.weight)).toEqual([85, 80])
+    expect(m.get('squat')![0].weight).toBe(120)
+  })
+})

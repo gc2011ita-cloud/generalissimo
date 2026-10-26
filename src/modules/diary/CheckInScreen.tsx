@@ -143,14 +143,6 @@ export function CheckInScreen() {
         ))}
       </Card>
 
-      <Card className="grid grid-cols-2 gap-3">
-        <Field label="A letto ieri sera">
-          <input type="time" value={form.bedtime} onChange={(e) => set('bedtime', e.target.value)} className="w-full rounded-xl bg-ox-900/6 px-3 py-2.5 text-base dark:bg-cream/10" />
-        </Field>
-        <Field label="Sveglia stamattina">
-          <input type="time" value={form.wakeTime} onChange={(e) => set('wakeTime', e.target.value)} className="w-full rounded-xl bg-ox-900/6 px-3 py-2.5 text-base dark:bg-cream/10" />
-        </Field>
-      </Card>
 
       <Card className="space-y-3">
         <Field label="Una cosa da migliorare">

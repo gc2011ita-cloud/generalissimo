@@ -40,7 +40,7 @@ export function ExercisesScreen() {
   }, [gym, exercises])
 
   return (
-    <Screen title="Progressi" back={<BackButton to="/gym" label="Palestra" />}>
+    <Screen title="Progressi" back={<BackButton to="/gym/sessions" label="Allenamenti" />}>
       <SectionTitle>Volume settimanale (kg × ripetizioni)</SectionTitle>
       <div className="flex gap-2 overflow-x-auto pb-1">
         {MUSCLE_GROUPS.map((m) => (

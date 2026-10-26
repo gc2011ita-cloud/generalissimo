@@ -4,8 +4,9 @@ import { navigate } from '../../lib/router'
 export const MORE_SECTIONS = [
   { path: '/finance', label: 'Movimenti', empty: '' },
   { path: '/investments', label: 'Investimenti', empty: '' },
+  { path: '/recurring', label: 'Spese ricorrenti', empty: '' },
   { path: '/diary', label: 'Diario', empty: '' },
-  { path: '/study', label: 'Studio', empty: 'Studio a stati con ripasso: Fase 2.' },
+  { path: '/study', label: 'Studio', empty: '' },
   { path: '/stats', label: 'Statistiche', empty: 'Statistiche e revisioni: Fase 3.' },
   { path: '/settings', label: 'Impostazioni', empty: '' },
 ] as const

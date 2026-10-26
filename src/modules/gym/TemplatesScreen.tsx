@@ -13,7 +13,7 @@ export function TemplatesScreen() {
   const [editing, setEditing] = useState<WorkoutTemplate | 'new' | null>(null)
 
   return (
-    <Screen title="Schede" back={<BackButton to="/gym" label="Palestra" />}>
+    <Screen title="Schede" back={<BackButton to="/gym/sessions" label="Allenamenti" />}>
       <List>
         {(templates ?? []).map((t) => (
           <ListRow
